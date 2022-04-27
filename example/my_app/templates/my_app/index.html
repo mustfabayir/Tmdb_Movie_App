@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% include "_movie.html" %}
+{% load static %}
+{% block title %}
+    Index
+{% endblock %}
+
+{% block content %}
+    
+    <form action="/search/" method="GET" class="jumbotron text-center">
+        <div class="container my-2">
+            <div class="input-group mb-3 justify-content-center align-items-center">
+                <div class="form-outline col-md-4">
+                    {% csrf_token %}
+                    <input type="search" class="form-control" placeholder="Search Query" name="q">
+                </div>
+
+                <div class="jumbotron text-center">
+                    <button type="submit" class="btn btn-secondary">Search</button>
+                </div>
+            </div>
+        </div>  
+    </form>
+
+    <div class="album py-5">
+        <div class="container">
+            
+            <div class="row">
+                
+                {% for a in page_obj %}
+                <div class="col-md-3">
+                    <div class="card mb-5 shadow-sm">
+                        <a href="#"><img class="card-img-top" src="https://image.tmdb.org/t/p/w500/{{ a.poster_path }}" alt="poster"></a>
+                        <div class="card-body">
+                            <h5 class="card-title text-dark" style="font-weight:bolder;">
+                                {% if a.title %}
+                                    {{ a.title }}
+                                {% else %}
+                                    {{ a.name }}
+                                {% endif %}
+                            </h5>
+                            <p> 
+                                {% if a.release_date %}
+                                    {{ a.release_date }}
+                                {% else %}
+                                    {{ a.first_air_date }}
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    
+
+    <div class="album">
+        <div class="container my-2">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link bg-danger text-light" href="?page=1">First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link bg-danger text-light" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+                <li class="page-item active" aria-current="page">
+                    <a class="page-link bg-danger" href="#">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} <span class="sr-only">(current)</span></a>
+                </li>
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link bg-danger text-light" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link bg-danger text-light" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                </li>
+                {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+{% endblock %}
